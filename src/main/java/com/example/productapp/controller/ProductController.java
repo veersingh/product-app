@@ -18,7 +18,7 @@ class ProductController {
 
 	@GetMapping(path = "/products")
 	public String getProducts(Model model) {
-		ResponseEntity<String[]> response = restemplate.getForEntity("spring-boot-service1-product-list-demo.origin.cloudmaf.io/products", String[].class);
+		ResponseEntity<String[]> response = restemplate.getForEntity("http://spring-boot-service1-spring-boot-product-sample.origin.cloudmaf.io/products", String[].class);
 
 		model.addAttribute("products", response.getBody());
 		return "products";
