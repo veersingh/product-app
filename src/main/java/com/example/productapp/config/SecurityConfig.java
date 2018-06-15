@@ -1,5 +1,16 @@
 package com.example.productapp.config;
 
+import java.security.KeyManagementException;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.SSLContext;
+
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakSecurityComponents;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
@@ -41,7 +52,14 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
 	@Bean
 	@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-	public KeycloakRestTemplate keycloakRestTemplate() {
+	public KeycloakRestTemplate keycloakRestTemplate() throws KeyManagementException, NoSuchAlgorithmException, KeyStoreException {
+		SSLContext sslContext = org.apache.http.ssl.SSLContexts.custom()
+	            .loadTrustMaterial(null, (X509Certificate[] chain, String authType) -> true)
+	            .build();
+	        CloseableHttpClient httpClient = HttpClients.custom()
+	            .setSSLSocketFactory(new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+	            .build();
+			keycloakClientRequestFactory.setHttpClient(httpClient);
 		return new KeycloakRestTemplate(keycloakClientRequestFactory);
 	}
 
