@@ -21,13 +21,12 @@ class ProductController {
 
 	@GetMapping(path = "/products")
 	public String getProducts(Principal principal, Model model) {
-		// ResponseEntity<String[]> response =
-		// restemplate.getForEntity("http://localhost:8094/products", String[].class);
+		 ResponseEntity<String[]> response = restemplate.getForEntity("http://spring-boot-service1-product-list.origin.cloudmaf.io/products", String[].class);
 
-		// model.addAttribute("products", response.getBody());
-		List<String> products = Arrays.asList("iPad", "iPhone", "iPod");
+		 model.addAttribute("products", response.getBody());
+		//List<String> products = Arrays.asList("iPad", "iPhone", "iPod");
 		model.addAttribute("principal", principal);
-		model.addAttribute("products", products);
+		//model.addAttribute("products", products);
 		return "products";
 
 	}
