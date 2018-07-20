@@ -25,7 +25,6 @@ class ProductController {
 
 		model.addAttribute("products", response.getBody());
 		model.addAttribute("principal", principal);
-
 		return "products";
 
 	}
